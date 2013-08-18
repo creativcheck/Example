@@ -2,11 +2,114 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   xmlns:ui="ui.*" xmlns:ComboBox="ui.ComboBox.*"
+			   xmlns:ui="ui.*"
+			   xmlns:ComboBox="ui.ComboBox.*"
+			   xmlns:Slider="ui.Slider.*"
 			   backgroundColor="0xd3e0f1"
-			   width="1024"
-			   height="768">
-
-		
+			   width="700"
+			   height="600">
+	<fx:Style source="Example.css">
+	
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import ui.DataGrid.HeaderRenderer;
+			
+			[Bindable]
+			public var percent:Number = 100;
+			
+			protected function myComboBox_changeHandler(event:IndexChangeEvent):void
+			{
+				myComboBox.textInput.text = myComboBox.selectedItem.name.toString();
+			}
+			
+			protected function hslider1_changeHandler(event:Event):void
+			{
+				percent = slider.value;
+			}
+			
+			protected function increaseBtn_clickHandler(event:MouseEvent):void
+			{
+				var count:Number = slider.value;
+				var newcount:Number = count + 10;
+				if (newcount % 10 != 0)
+					newcount = 10 * (Math.floor(newcount/10));
+				
+				if (count + 10 <= slider.maximum)
+					slider.value = newcount;
+				else
+					slider.value = slider.maximum;
+				
+				percent = slider.value;
+			}
+			
+			protected function reduceBtn_clickHandler(event:MouseEvent):void
+			{
+				var count:Number = slider.value;
+				var newcount:Number = count - 10;
+				if (newcount % 10 != 0)
+					newcount = 10 * (Math.ceil(newcount/10));
+				
+				if (count - 10 >= slider.minimum)
+					slider.value = newcount;
+				else
+					slider.value = slider.minimum;
+				
+				percent = slider.value;
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:ArrayList id="list">
+			<fx:Object name="Общий" secondName="Формат не указан" image="@Embed('assets/overall.png')" overImage="@Embed('assets/overall-over.png')"/>
+			<fx:Object name="Числовой" image="@Embed('assets/numeric.png')" overImage="@Embed('assets/numeric-over.png')"/>
+			<fx:Object name="Денежный" image="@Embed('assets/money.png')" overImage="@Embed('assets/money-over.png')"/>
+			<fx:Object name="Финансовый" image="@Embed('assets/finance.png')" overImage="@Embed('assets/finance-over.png')"/>
+			<fx:Object name="Краткая дата" image="@Embed('assets/Date.png')" overImage="@Embed('assets/Date-over.png')"/>
+			<fx:Object name="Длинный формат даты" image="@Embed('assets/Date.png')" overImage="@Embed('assets/Date-over.png')"/>
+			<fx:Object name="Время" image="@Embed('assets/time.png')" overImage="@Embed('assets/time-over.png')"/>
+			<fx:Object name="Процентный" image="@Embed('assets/percent.png')" overImage="@Embed('assets/percent-over.png')"/>
+			<fx:Object name="Дробный" image="@Embed('assets/fractional.png')" overImage="@Embed('assets/fractional-over.png')"/>
+			<fx:Object name="Экспоненциальный" image="@Embed('assets/exponential.png')" overImage="@Embed('assets/exponential-over.png')"/>
+			<fx:Object name="Текстовый" image="@Embed('assets/text.png')" overImage="@Embed('assets/text-over.png')"/>
+		</s:ArrayList>
+	</fx:Declarations>
+	
+	<ComboBox:ComboBox id="myComboBox" x="{Grid.width + 30}" y="10" width="128" height="22"
+					   dataProvider="{list}" verticalScrollPolicy="auto" change="myComboBox_changeHandler(event)">
+	</ComboBox:ComboBox>
+	
+	<s:Group x="{Grid.width + 30}" y="115">
+		<s:BitmapImage source="@Embed('assets/SliderBackground.png')" scaleMode="stretch" width="100%"/>
+		<s:Label id="percentLbl" text="{percent}%" fontSize="11" color="0x092061" top="6" left="5"/>
+		<s:HGroup gap="-1" left="40">
+			<s:Button id="reduceBtn" tabEnabled="false" skinClass="ui.Slider.ReduceButtonSkin" click="reduceBtn_clickHandler(event)"/>
+			<s:HSlider id="slider" x="230" y="100" skinClass="ui.Slider.SliderSkin" minimum="10" maximum="400" value="100" change="hslider1_changeHandler(event)"/>
+			<s:Button id="increaseBtn" tabEnabled="false" skinClass="ui.Slider.IncreaseButtonSkin" click="increaseBtn_clickHandler(event)"/>
+		</s:HGroup>
+	</s:Group>
+	
+	<s:ButtonBar x="{Grid.width + 30}" y="60" skinClass="ui.ButtonBar.ButtonBarSkin" dataProvider="{new ArrayCollection(['Выровнять по левому краю', 'По центру', 'По правому краю'])}"/>
+	
+	<s:DataGrid x="10" y="10" id="Grid"
+				requestedMinRowCount="10"
+				requestedRowCount="10">
+		<s:columns>
+			<s:ArrayCollection>
+				<s:GridColumn headerText="A" width="64" itemRenderer="ui.DataGrid.DataGridItemRenderer" headerRenderer="{new ClassFactory(ui.DataGrid.HeaderRenderer)}"/>
+				<s:GridColumn headerText="B" width="64" itemRenderer="ui.DataGrid.DataGridItemRenderer" headerRenderer="{new ClassFactory(ui.DataGrid.HeaderRenderer)}"/>
+				<s:GridColumn headerText="C" width="64" itemRenderer="ui.DataGrid.DataGridItemRenderer" headerRenderer="{new ClassFactory(ui.DataGrid.HeaderRenderer)}"/>
+				<s:GridColumn headerText="D" width="64" itemRenderer="ui.DataGrid.DataGridItemRenderer" headerRenderer="{new ClassFactory(ui.DataGrid.HeaderRenderer)}"/>
+				<s:GridColumn headerText="E" width="64" itemRenderer="ui.DataGrid.DataGridItemRenderer" headerRenderer="{new ClassFactory(ui.DataGrid.HeaderRenderer)}"/>
+			</s:ArrayCollection>
+		</s:columns>
+	</s:DataGrid>
 	
 </s:Application>
